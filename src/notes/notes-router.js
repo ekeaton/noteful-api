@@ -10,7 +10,7 @@ const serializeNote = note => ({
     id: note.id,
     name: xss(note.name),
     date_modified: note.date_modified,
-    folderId: note.folderId,
+    folderId: note.folderid,
     content: xss(note.content),
   })
 
@@ -25,15 +25,15 @@ notesRouter
       .catch(next)
   })
   .post(jsonParser, (req, res, next) => {
-    const { name, folderId, content } = req.body
-    const newNote = { name, content }
+    const { name, folderid, date_modified, content } = req.body
+    const newNote = { name, folderid, date_modified, content }
 
     for (const [key, value] of Object.entries(newNote)) 
        if (value == null) 
           return res.status(400).json({
             error: { message: `Missing '${key}' in request body` }
           })
-    newNote.folderId = folderId 
+    newNote.folderid = folderid 
     NotesService.insertNote(
       req.app.get('db'),
       newNote
